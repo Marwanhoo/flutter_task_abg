@@ -9,8 +9,9 @@ class AuthLoadingState extends AuthStates {}
 class AuthenticatedState extends AuthStates {
   final String sessionId;
   final int accountId;
+  final String username;
 
-  AuthenticatedState(this.sessionId, this.accountId);
+  AuthenticatedState(this.sessionId, this.accountId, this.username);
 }
 
 class AuthErrorState extends AuthStates {

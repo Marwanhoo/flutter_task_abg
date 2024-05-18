@@ -27,8 +27,9 @@ class AuthCubit extends Cubit<AuthStates> {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('session_id', createSessionResponse.sessionId);
       await prefs.setInt('account_id', accountDetailsResponse.id);
+      await prefs.setString('username', accountDetailsResponse.username);
 
-      emit(AuthenticatedState(createSessionResponse.sessionId, accountDetailsResponse.id));
+      emit(AuthenticatedState(createSessionResponse.sessionId, accountDetailsResponse.id,accountDetailsResponse.username));
     } catch (e) {
       emit(AuthErrorState(e.toString()));
     }
@@ -38,9 +39,10 @@ class AuthCubit extends Cubit<AuthStates> {
     final prefs = await SharedPreferences.getInstance();
     final sessionId = prefs.getString('session_id');
     final accountId = prefs.getInt('account_id');
+    final username = prefs.getString('username');
 
-    if (sessionId != null && accountId != null) {
-      emit(AuthenticatedState(sessionId, accountId));
+    if (sessionId != null && accountId != null && username != null) {
+      emit(AuthenticatedState(sessionId, accountId,username));
     } else {
       emit(AuthInitialState());
     }
@@ -50,6 +52,7 @@ class AuthCubit extends Cubit<AuthStates> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('session_id');
     await prefs.remove('account_id');
+    await prefs.remove('username');
     emit(AuthInitialState());
   }
 

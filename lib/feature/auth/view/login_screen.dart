@@ -15,7 +15,9 @@ class LoginScreen extends StatelessWidget {
       listener: (context, state) {
         if (state is AuthenticatedState) {
           Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const HomeScreen()),
+            MaterialPageRoute(builder: (context) =>  HomeScreen(
+              username: state.username,
+            )),
           );
         }else if (state is AuthErrorState) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
@@ -109,7 +111,11 @@ class LoginScreen extends StatelessWidget {
                     color: Colors.purple,
                     minWidth: double.infinity,
                     height: 50,
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_)=> const HomeScreen()),
+                      );
+                    },
                     child: const Text(
                       "ANONYMOUS",
                       style: TextStyle(

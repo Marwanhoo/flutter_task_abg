@@ -3,7 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_task_abg/feature/auth/controller/cubit/auth_cubit.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({super.key,  this.username});
+  final String? username;
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +12,7 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(),
       body: Column(
         children: [
-          const Text("Hello"),
+           Text("Hello ${username ?? "Guest"}"),
           ElevatedButton(onPressed: (){
             BlocProvider.of<AuthCubit>(context).logout();
           }, child: const Text("Logout"),),
