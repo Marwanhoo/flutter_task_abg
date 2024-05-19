@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_task_abg/feature/auth/controller/cubit/auth_cubit.dart';
+import 'package:flutter_task_abg/feature/auth/controller/cubit_auth/auth_cubit.dart';
 import 'package:flutter_task_abg/feature/auth/controller/cubit_dark/theme_cubit.dart';
 import 'package:flutter_task_abg/feature/home/view/home_screen.dart';
 

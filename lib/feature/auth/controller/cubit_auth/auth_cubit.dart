@@ -31,7 +31,8 @@ class AuthCubit extends Cubit<AuthStates> {
 
       emit(AuthenticatedState(createSessionResponse.sessionId, accountDetailsResponse.id,accountDetailsResponse.username));
     } catch (e) {
-      emit(AuthErrorState(e.toString()));
+      //emit(AuthErrorState(e.toString()));
+      emit(AuthErrorState("Please Check User Name or Password"));
     }
   }
 
