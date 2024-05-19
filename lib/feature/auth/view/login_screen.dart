@@ -112,7 +112,9 @@ class LoginScreen extends StatelessWidget {
                       }
                     },
                     child: state is AuthLoadingState
-                        ? const CircularProgressIndicator()
+                        ? const CircularProgressIndicator(
+                      color: Colors.white,
+                    )
                         : const Text(
                             "LOGIN",
                             style: TextStyle(

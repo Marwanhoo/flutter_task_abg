@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
           create: (context) => AuthCubit()..checkAuthentication(),
         ),
         BlocProvider(
-          create: (context) => ThemeCubit()..changeAppMode(),
+          create: (context) => ThemeCubit()..loadThemeMode(),
         ),
       ],
       child: BlocBuilder<ThemeCubit, ThemeState>(
