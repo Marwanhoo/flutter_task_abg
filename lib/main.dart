@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_task_abg/feature/auth/controller/cubit/auth_cubit.dart';
 import 'package:flutter_task_abg/feature/auth/controller/cubit/my_bloc_observer.dart';
+import 'package:flutter_task_abg/feature/auth/controller/cubit_dark/theme_cubit.dart';
 import 'package:flutter_task_abg/feature/auth/view/login_screen.dart';
 import 'package:flutter_task_abg/feature/home/view/home_screen.dart';
 
@@ -18,27 +19,41 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) =>
-          AuthCubit()
-            ..checkAuthentication(),
+          create: (context) => AuthCubit()..checkAuthentication(),
+        ),
+        BlocProvider(
+          create: (context) => ThemeCubit()..changeAppMode(),
         ),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          useMaterial3: true,
-        ),
-        home: BlocBuilder<AuthCubit, AuthStates>(
-          builder: (context, state) {
-            if(state is AuthenticatedState){
-              return  HomeScreen(username: state.username,);
-            }else{
-              return const LoginScreen();
-            }
-
-          },
-        ),
+      child: BlocBuilder<ThemeCubit, ThemeState>(
+        builder: (context, state) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Flutter Demo',
+            theme: ThemeData(
+              useMaterial3: true,
+              brightness: Brightness.light,
+            ),
+            darkTheme: ThemeData(
+              useMaterial3: true,
+              brightness: Brightness.dark,
+            ),
+            themeMode: (state is AppChangeModeState)
+                ? state.themeMode
+                : ThemeMode.light,
+            home: BlocBuilder<AuthCubit, AuthStates>(
+              builder: (context, state) {
+                if (state is AuthenticatedState) {
+                  return HomeScreen(
+                    username: state.username,
+                  );
+                } else {
+                  return const LoginScreen();
+                }
+              },
+            ),
+          );
+        },
       ),
     );
   }

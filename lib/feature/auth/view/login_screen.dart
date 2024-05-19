@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_task_abg/feature/auth/controller/cubit/auth_cubit.dart';
+import 'package:flutter_task_abg/feature/auth/controller/cubit_dark/theme_cubit.dart';
 import 'package:flutter_task_abg/feature/home/view/home_screen.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -15,12 +16,14 @@ class LoginScreen extends StatelessWidget {
       listener: (context, state) {
         if (state is AuthenticatedState) {
           Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) =>  HomeScreen(
-              username: state.username,
-            )),
+            MaterialPageRoute(
+                builder: (context) => HomeScreen(
+                      username: state.username,
+                    )),
           );
-        }else if (state is AuthErrorState) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
+        } else if (state is AuthErrorState) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(state.message)));
         }
       },
       builder: (context, state) {
@@ -32,6 +35,19 @@ class LoginScreen extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
+            actions: [
+              BlocBuilder<ThemeCubit, ThemeState>(
+                builder: (context, state) {
+                  final themeCubit = BlocProvider.of<ThemeCubit>(context);
+                  return IconButton(
+                    onPressed: () {
+                      themeCubit.changeAppMode();
+                    },
+                    icon: Icon(themeCubit.themeMode == ThemeMode.light ? Icons.dark_mode : Icons.light_mode),
+                  );
+                },
+              ),
+            ],
           ),
           body: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -98,11 +114,11 @@ class LoginScreen extends StatelessWidget {
                     child: state is AuthLoadingState
                         ? const CircularProgressIndicator()
                         : const Text(
-                    "LOGIN",
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
+                            "LOGIN",
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
                   ),
                   const SizedBox(
                     height: 16,
@@ -113,7 +129,7 @@ class LoginScreen extends StatelessWidget {
                     height: 50,
                     onPressed: () {
                       Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_)=> const HomeScreen()),
+                        MaterialPageRoute(builder: (_) => const HomeScreen()),
                       );
                     },
                     child: const Text(
