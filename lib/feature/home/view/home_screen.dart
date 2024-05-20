@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_task_abg/feature/auth/controller/cubit_auth/auth_cubit.dart';
@@ -15,7 +14,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Hello ${username ?? "Guest"}"),
+        title: Text("Welcome ${username ?? "Guest"}"),
         actions: [
           PopupMenuButton(
             onSelected: (value) {
@@ -109,23 +108,82 @@ class NowPlayingMoviesView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<NowPlayingCubit, NowPlayingState>(
+    return BlocConsumer<NowPlayingCubit, NowPlayingState>(
+      listener: (context, state) {},
       builder: (context, state) {
-        if(state is NowPlayingInitialState || state is NowPlayingMoviesLoadingState && state is! NowPlayingMoviesLoadedState){
-          return const Center(child: CircularProgressIndicator(),);
-        }else if (state is NowPlayingMoviesErrorState){
-          return Center(child: Text(state.message),);
-        }else if(state is NowPlayingMoviesLoadedState){
-          return ListView.builder(
+        if (state is NowPlayingInitialState ||
+            state is NowPlayingMoviesLoadingState &&
+                state is! NowPlayingMoviesLoadedState) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (state is NowPlayingMoviesErrorState) {
+          return Center(
+            child: Text(state.message),
+          );
+        } else if (state is NowPlayingMoviesLoadedState) {
+          return ListView.separated(
             controller: scrollController,
             itemBuilder: (context, index) {
               final movie = state.movies[index];
-              return ListTile(
-                leading: Image.network('https://image.tmdb.org/t/p/w500${movie.posterPath}'),
-                title: Text(movie.title),
-                subtitle: Text(movie.overview),
+              final isDarkTheme = Theme.of(context).brightness == Brightness.dark;
+              return Padding(
+                padding:  const EdgeInsets.all(8.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    color: isDarkTheme ? Colors.grey[800] : Colors.white10,
+                  ),
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Stack(
+                        alignment: Alignment.topRight,
+                        children: [
+                          SizedBox(
+                            width: double.infinity,
+                            height: 200,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(14),
+                              child: Image.network(
+                                'https://image.tmdb.org/t/p/w500${movie.posterPath}',
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                           Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: CircleAvatar(
+                              child: IconButton(onPressed: (){}, icon: const Icon(Icons.favorite_border)),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 5),
+                      Text(
+                        movie.title,
+                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: isDarkTheme ? Colors.white : Colors.black,
+                        ),
+                      ),
+                      Text(
+                        maxLines: 4,
+                        overflow: TextOverflow.ellipsis,
+                        movie.overview,
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          color: isDarkTheme ? Colors.white70 : Colors.black54,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               );
             },
+            separatorBuilder: (context, index) => const Divider(
+              indent: 75,endIndent: 75,
+            ),
             itemCount: state.movies.length,
           );
         }

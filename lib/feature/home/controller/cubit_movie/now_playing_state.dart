@@ -24,3 +24,4 @@ class NowPlayingMoviesErrorState extends NowPlayingState {
    NowPlayingMoviesErrorState(this.message);
 
 }
+
