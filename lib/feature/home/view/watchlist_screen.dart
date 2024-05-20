@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_task_abg/feature/auth/controller/cubit_auth/auth_cubit.dart';
 import 'package:flutter_task_abg/feature/home/controller/cubit_movie/now_playing_cubit.dart';
 
 class WatchListScreen extends StatelessWidget {
@@ -62,7 +63,9 @@ class WatchListScreen extends StatelessWidget {
                              Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: CircleAvatar(
-                                child: IconButton(onPressed: (){}, icon:const Icon(Icons.delete,color: Colors.red,)),
+                                child: IconButton(onPressed: (){
+                                  BlocProvider.of<AuthCubit>(context).addToWatchlist(movie.id, false);
+                                }, icon:const Icon(Icons.delete,color: Colors.red,)),
                               ),
                             ),
                           ],

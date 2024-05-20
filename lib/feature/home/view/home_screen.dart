@@ -50,16 +50,16 @@ class HomeScreen extends StatelessWidget {
                   },
                 );
               }
-              if (value == "watchlist"){
-                if (username != null){
-                  Navigator.of(context).push(MaterialPageRoute(builder: (_)=> const WatchListScreen()));
-                }  else{
+              if (value == "watchlist") {
+                if (username != null) {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (_) => const WatchListScreen()));
+                } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text("Please Log In")),
                   );
                 }
               }
-
             },
             itemBuilder: (context) {
               return [
@@ -91,7 +91,6 @@ class HomeScreen extends StatelessWidget {
                       Text("Watchlist"),
                     ],
                   ),
-
                 ),
                 if (username != null)
                   const PopupMenuItem(
@@ -104,7 +103,6 @@ class HomeScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-
               ];
             },
           ),
@@ -119,8 +117,9 @@ class HomeScreen extends StatelessWidget {
 
 class NowPlayingMoviesView extends StatelessWidget {
   final ScrollController scrollController = ScrollController();
+  final String? username;
 
-  NowPlayingMoviesView({super.key, required BuildContext context}) {
+  NowPlayingMoviesView({super.key, required BuildContext context, this.username}) {
     scrollController.addListener(() {
       if (scrollController.position.atEdge &&
           scrollController.position.pixels != 0) {
@@ -177,25 +176,28 @@ class NowPlayingMoviesView extends StatelessWidget {
                               ),
                             ),
                           ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: CircleAvatar(
-                      child: IconButton(
-                        onPressed: () {
-                          AuthStates state =
-                              BlocProvider.of<AuthCubit>(context)
-                                  .state;
-                          final isWatchlisted =
-                              (state is WatchlistUpdatedState) &&
-                                  state.movieId == movie.id &&
-                                  state.watchlist;
-                          BlocProvider.of<AuthCubit>(context)
-                              .addToWatchlist(movie.id, true);
-                        },
-                        icon: const Icon(Icons.favorite_border),
-                      ),
-                    ),
-                  ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: CircleAvatar(
+                              child: IconButton(
+                                onPressed: () {
+                                  if (username != null) {
+                                    AuthStates state =
+                                        BlocProvider.of<AuthCubit>(context).state;
+                                    BlocProvider.of<AuthCubit>(context)
+                                        .addToWatchlist(movie.id, true);
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text("Please Log In")),
+                                    );
+                                  }
+
+
+                                },
+                                icon: const Icon(Icons.favorite_border),
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                       const SizedBox(height: 5),
