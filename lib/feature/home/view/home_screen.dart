@@ -51,7 +51,13 @@ class HomeScreen extends StatelessWidget {
                 );
               }
               if (value == "watchlist"){
-                Navigator.of(context).push(MaterialPageRoute(builder: (_)=> const WatchListScreen()));
+                if (username != null){
+                  Navigator.of(context).push(MaterialPageRoute(builder: (_)=> const WatchListScreen()));
+                }  else{
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Please Log In")),
+                  );
+                }
               }
 
             },

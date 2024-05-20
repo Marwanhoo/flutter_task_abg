@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_task_abg/feature/home/controller/cubit_movie/now_playing_cubit.dart';
 
@@ -11,10 +13,12 @@ class WatchListScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("WatchList"),
-        leading: IconButton(onPressed: (){
-          Navigator.of(context).pop();
-          BlocProvider.of<NowPlayingCubit>(context).fetchNowPlayingMovies();
-        }, icon: Icon(Icons.arrow_back)),
+        leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              BlocProvider.of<NowPlayingCubit>(context).fetchNowPlayingMovies();
+            },
+            icon: const Icon(Icons.arrow_back)),
       ),
       body: BlocConsumer<NowPlayingCubit, NowPlayingState>(
         listener: (context, state) {},
@@ -28,26 +32,25 @@ class WatchListScreen extends StatelessWidget {
               child: Text(state.error),
             );
           } else if (state is WatchListMoviesLoadedState) {
-            return ListView.separated(
+            return GridView.builder(
+              padding: const EdgeInsets.all(12),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2, mainAxisSpacing: 10, crossAxisSpacing: 10,
+                mainAxisExtent: 300,
+              ),
               itemBuilder: (context, index) {
                 final movie = state.movies[index];
-
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    padding: const EdgeInsets.all(12),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                return Column(
+                  children: [
+                    Stack(
+                      alignment: Alignment.bottomCenter,
                       children: [
                         Stack(
                           alignment: Alignment.topRight,
                           children: [
                             SizedBox(
                               width: double.infinity,
-                              height: 200,
+                              height: 300,
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(14),
                                 child: Image.network(
@@ -56,43 +59,40 @@ class WatchListScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            Padding(
+                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: CircleAvatar(
-                                child: IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(Icons.favorite_border),
-                                ),
+                                child: IconButton(onPressed: (){}, icon:const Icon(Icons.delete,color: Colors.red,)),
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 5),
-                        Text(
-                          movie.title,
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineSmall
-                              ?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
-                        ),
-                        Text(
-                          maxLines: 4,
-                          overflow: TextOverflow.ellipsis,
-                          movie.overview,
-                          style:
-                              Theme.of(context).textTheme.bodyLarge?.copyWith(),
+                        Container(
+                          width: double.infinity,
+                          alignment: Alignment.center,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.only(
+                              bottomRight: Radius.circular(16),
+                              bottomLeft: Radius.circular(16),
+                            ),
+                            color: Colors.black.withOpacity(0.8),
+                          ),
+
+                          child: Text(
+                            textAlign: TextAlign.center,
+                            movie.title,
+                            style: const TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
                       ],
                     ),
-                  ),
+
+                  ],
                 );
               },
-              separatorBuilder: (context, index) => const Divider(
-                indent: 75,
-                endIndent: 75,
-              ),
               itemCount: state.movies.length,
             );
           }
