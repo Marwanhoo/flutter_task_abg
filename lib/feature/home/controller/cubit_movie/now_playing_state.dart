@@ -17,11 +17,32 @@ class NowPlayingMoviesLoadedState extends NowPlayingState {
   });
 
 }
-
 class NowPlayingMoviesErrorState extends NowPlayingState {
   final String message;
 
    NowPlayingMoviesErrorState(this.message);
 
 }
+
+
+
+
+class WatchListMoviesLoadingState extends NowPlayingState {}
+class WatchListMoviesLoadedState extends NowPlayingState {
+  final List<MovieModel> movies;
+
+  WatchListMoviesLoadedState(this.movies);
+}
+class WatchListMoviesErrorState extends NowPlayingState {
+  final String error;
+
+  WatchListMoviesErrorState(this.error);
+}
+
+
+
+
+
+
+
 

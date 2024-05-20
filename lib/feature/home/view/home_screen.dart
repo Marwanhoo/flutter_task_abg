@@ -4,6 +4,7 @@ import 'package:flutter_task_abg/feature/auth/controller/cubit_auth/auth_cubit.d
 import 'package:flutter_task_abg/feature/auth/controller/cubit_dark/theme_cubit.dart';
 import 'package:flutter_task_abg/feature/auth/view/login_screen.dart';
 import 'package:flutter_task_abg/feature/home/controller/cubit_movie/now_playing_cubit.dart';
+import 'package:flutter_task_abg/feature/home/view/watchlist_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key, this.username});
@@ -49,6 +50,10 @@ class HomeScreen extends StatelessWidget {
                   },
                 );
               }
+              if (value == "watchlist"){
+                Navigator.of(context).push(MaterialPageRoute(builder: (_)=> const WatchListScreen()));
+              }
+
             },
             itemBuilder: (context) {
               return [
@@ -71,6 +76,17 @@ class HomeScreen extends StatelessWidget {
                     },
                   ),
                 ),
+                const PopupMenuItem(
+                  value: "watchlist",
+                  child: Row(
+                    children: [
+                      Icon(Icons.movie),
+                      SizedBox(width: 16),
+                      Text("Watchlist"),
+                    ],
+                  ),
+
+                ),
                 if (username != null)
                   const PopupMenuItem(
                     value: "logout",
@@ -82,6 +98,7 @@ class HomeScreen extends StatelessWidget {
                       ],
                     ),
                   ),
+
               ];
             },
           ),
@@ -169,7 +186,7 @@ class NowPlayingMoviesView extends StatelessWidget {
                           BlocProvider.of<AuthCubit>(context)
                               .addToWatchlist(movie.id, true);
                         },
-                        icon: Icon(Icons.favorite_border),
+                        icon: const Icon(Icons.favorite_border),
                       ),
                     ),
                   ),

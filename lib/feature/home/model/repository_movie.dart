@@ -14,4 +14,13 @@ class RepositoryMovie {
       throw Exception('Failed to load now playing movies');
     }
   }
+  Future<NowPlayingMoviesResponse> fetchWatchListMovies(sessionId) async {
+    //{{baseUrl}}/account/:account_id/watchlist/movies?session_id=0a32ed3858e451dd07747c4b349280e1dc18f6b8
+    final response = await http.get(Uri.parse('$baseUrl/account/account_id/watchlist/movies?session_id=$sessionId&api_key=$apiKey'));
+    if (response.statusCode == 200) {
+      return NowPlayingMoviesResponse.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to load Watch List');
+    }
+  }
 }
