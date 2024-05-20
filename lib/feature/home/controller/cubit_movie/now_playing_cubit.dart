@@ -12,6 +12,7 @@ class NowPlayingCubit extends Cubit<NowPlayingState> {
 
   int currentPage = 1;
   bool isLoading = false;
+  List<MovieModel> movies = [];
 
   Future<void> fetchNowPlayingMovies() async {
     if (isLoading) return;
@@ -21,8 +22,9 @@ class NowPlayingCubit extends Cubit<NowPlayingState> {
       emit(NowPlayingMoviesLoadingState());
       final nowPlayingMoviesResponse =
           await repositoryMovie.fetchNowPlayingMovies(currentPage);
+      movies.addAll(nowPlayingMoviesResponse.results);
       emit(NowPlayingMoviesLoadedState(
-        movies: nowPlayingMoviesResponse.results,
+        movies: List.from(movies),
         currentPage: nowPlayingMoviesResponse.page,
         totalPages: nowPlayingMoviesResponse.totalPages,
       ));
