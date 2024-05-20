@@ -1,13 +1,16 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_task_abg/feature/auth/controller/cubit_auth/auth_cubit.dart';
 import 'package:flutter_task_abg/feature/home/controller/cubit_movie/now_playing_cubit.dart';
 
-class WatchListScreen extends StatelessWidget {
+class WatchListScreen extends StatefulWidget {
   const WatchListScreen({super.key});
 
+  @override
+  State<WatchListScreen> createState() => _WatchListScreenState();
+}
+
+class _WatchListScreenState extends State<WatchListScreen> {
   @override
   Widget build(BuildContext context) {
     BlocProvider.of<NowPlayingCubit>(context).fetchWatchListMovies();
@@ -65,6 +68,10 @@ class WatchListScreen extends StatelessWidget {
                               child: CircleAvatar(
                                 child: IconButton(onPressed: (){
                                   BlocProvider.of<AuthCubit>(context).addToWatchlist(movie.id, false);
+                                  setState(() {
+                                    BlocProvider.of<NowPlayingCubit>(context).fetchWatchListMovies();
+
+                                  });
                                 }, icon:const Icon(Icons.delete,color: Colors.red,)),
                               ),
                             ),
