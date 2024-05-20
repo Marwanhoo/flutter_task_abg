@@ -4,6 +4,7 @@ import 'package:flutter_task_abg/feature/auth/controller/cubit_auth/auth_cubit.d
 import 'package:flutter_task_abg/feature/auth/controller/cubit_auth/my_bloc_observer.dart';
 import 'package:flutter_task_abg/feature/auth/controller/cubit_dark/theme_cubit.dart';
 import 'package:flutter_task_abg/feature/auth/view/login_screen.dart';
+import 'package:flutter_task_abg/feature/home/controller/cubit_movie/now_playing_cubit.dart';
 import 'package:flutter_task_abg/feature/home/view/home_screen.dart';
 
 void main() {
@@ -23,6 +24,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => ThemeCubit()..loadThemeMode(),
+        ),
+        BlocProvider(
+          create: (context) => NowPlayingCubit()..fetchNowPlayingMovies(),
         ),
       ],
       child: BlocBuilder<ThemeCubit, ThemeState>(

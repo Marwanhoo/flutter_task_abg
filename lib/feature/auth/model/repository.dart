@@ -57,4 +57,15 @@ class TMDBRepository {
       throw Exception('Failed to get account details');
     }
   }
+
+
+  Future<NowPlayingMoviesResponseModel> fetchNowPlayingMovies(int page) async {
+    final response = await http.get(Uri.parse('$baseUrl/movie/now_playing?api_key=$apiKey&page=$page'));
+    if (response.statusCode == 200) {
+      return NowPlayingMoviesResponseModel.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to load now playing movies');
+    }
+  }
+
 }

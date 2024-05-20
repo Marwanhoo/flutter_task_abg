@@ -1,13 +1,16 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_task_abg/feature/auth/controller/cubit_auth/auth_cubit.dart';
 import 'package:flutter_task_abg/feature/auth/controller/cubit_dark/theme_cubit.dart';
 import 'package:flutter_task_abg/feature/auth/view/login_screen.dart';
+import 'package:flutter_task_abg/feature/home/controller/cubit_movie/now_playing_cubit.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key, this.username});
 
   final String? username;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,7 +36,7 @@ class HomeScreen extends StatelessWidget {
                             Navigator.of(context).pushAndRemoveUntil(
                                 MaterialPageRoute(
                                     builder: (_) => const LoginScreen()),
-                                    (route) => false);
+                                (route) => false);
                           },
                           child: const Text("Ok"),
                         ),
@@ -57,33 +60,77 @@ class HomeScreen extends StatelessWidget {
                       final themeCubit = BlocProvider.of<ThemeCubit>(context);
                       return Row(
                         children: [
-                          Icon(themeCubit.themeMode == ThemeMode.light ? Icons.dark_mode : Icons.light_mode),
+                          Icon(themeCubit.themeMode == ThemeMode.light
+                              ? Icons.dark_mode
+                              : Icons.light_mode),
                           const SizedBox(width: 16),
-                          Text(themeCubit.themeMode == ThemeMode.light ? "Dark Mode" : "Light Mode"),
+                          Text(themeCubit.themeMode == ThemeMode.light
+                              ? "Dark Mode"
+                              : "Light Mode"),
                         ],
                       );
                     },
                   ),
                 ),
-                if(username != null) const PopupMenuItem(
-                  value: "logout",
-                  child: Row(
-                    children: [
-                      Icon(Icons.logout),
-                      SizedBox(width: 16),
-                      Text("Logout"),
-                    ],
+                if (username != null)
+                  const PopupMenuItem(
+                    value: "logout",
+                    child: Row(
+                      children: [
+                        Icon(Icons.logout),
+                        SizedBox(width: 16),
+                        Text("Logout"),
+                      ],
+                    ),
                   ),
-                ),
               ];
             },
           ),
         ],
       ),
-      body: const Column(
-        children: [
-        ],
+      body: NowPlayingMoviesView(
+        context: context,
       ),
+    );
+  }
+}
+
+class NowPlayingMoviesView extends StatelessWidget {
+  final ScrollController scrollController = ScrollController();
+
+  NowPlayingMoviesView({super.key, required BuildContext context}) {
+    scrollController.addListener(() {
+      if (scrollController.position.atEdge &&
+          scrollController.position.pixels != 0) {
+        context.read<NowPlayingCubit>().fetchNowPlayingMovies();
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<NowPlayingCubit, NowPlayingState>(
+      builder: (context, state) {
+        if(state is NowPlayingInitialState || state is NowPlayingMoviesLoadingState && state is! NowPlayingMoviesLoadedState){
+          return const Center(child: CircularProgressIndicator(),);
+        }else if (state is NowPlayingMoviesErrorState){
+          return Center(child: Text(state.message),);
+        }else if(state is NowPlayingMoviesLoadedState){
+          return ListView.builder(
+            controller: scrollController,
+            itemBuilder: (context, index) {
+              final movie = state.movies[index];
+              return ListTile(
+                leading: Image.network('https://image.tmdb.org/t/p/w500${movie.posterPath}'),
+                title: Text(movie.title),
+                subtitle: Text(movie.overview),
+              );
+            },
+            itemCount: state.movies.length,
+          );
+        }
+        return Container();
+      },
     );
   }
 }
