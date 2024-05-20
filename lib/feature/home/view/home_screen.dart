@@ -126,9 +126,11 @@ class NowPlayingMoviesView extends StatelessWidget {
             controller: scrollController,
             itemBuilder: (context, index) {
               final movie = state.movies[index];
-              final isDarkTheme = Theme.of(context).brightness == Brightness.dark;
+              final isDarkTheme =
+                  Theme.of(context).brightness == Brightness.dark;
+
               return Padding(
-                padding:  const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(8.0),
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
@@ -152,29 +154,46 @@ class NowPlayingMoviesView extends StatelessWidget {
                               ),
                             ),
                           ),
-                           Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: CircleAvatar(
-                              child: IconButton(onPressed: (){}, icon: const Icon(Icons.favorite_border)),
-                            ),
-                          ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: CircleAvatar(
+                      child: IconButton(
+                        onPressed: () {
+                          AuthStates state =
+                              BlocProvider.of<AuthCubit>(context)
+                                  .state;
+                          final isWatchlisted =
+                              (state is WatchlistUpdatedState) &&
+                                  state.movieId == movie.id &&
+                                  state.watchlist;
+                          BlocProvider.of<AuthCubit>(context)
+                              .addToWatchlist(movie.id, true);
+                        },
+                        icon: Icon(Icons.favorite_border),
+                      ),
+                    ),
+                  ),
                         ],
                       ),
                       const SizedBox(height: 5),
                       Text(
                         movie.title,
-                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: isDarkTheme ? Colors.white : Colors.black,
-                        ),
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineSmall
+                            ?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: isDarkTheme ? Colors.white : Colors.black,
+                            ),
                       ),
                       Text(
                         maxLines: 4,
                         overflow: TextOverflow.ellipsis,
                         movie.overview,
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: isDarkTheme ? Colors.white70 : Colors.black54,
-                        ),
+                              color:
+                                  isDarkTheme ? Colors.white70 : Colors.black54,
+                            ),
                       ),
                     ],
                   ),
@@ -182,7 +201,8 @@ class NowPlayingMoviesView extends StatelessWidget {
               );
             },
             separatorBuilder: (context, index) => const Divider(
-              indent: 75,endIndent: 75,
+              indent: 75,
+              endIndent: 75,
             ),
             itemCount: state.movies.length,
           );

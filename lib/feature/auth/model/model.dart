@@ -112,4 +112,28 @@ class NowPlayingMoviesResponseModel {
       totalPages: json['total_pages'],
     );
   }
+
+
+
+
+}
+
+class WatchlistResponseModel {
+  final bool success;
+  final int statusCode;
+  final String statusMessage;
+
+  WatchlistResponseModel({
+    required this.success,
+    required this.statusCode,
+    required this.statusMessage,
+  });
+
+  factory WatchlistResponseModel.fromJson(Map<String, dynamic> json) {
+    return WatchlistResponseModel(
+      success: json['success'],
+      statusCode: json['status_code'],
+      statusMessage: json['status_message'],
+    );
+  }
 }

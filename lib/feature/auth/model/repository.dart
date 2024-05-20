@@ -68,4 +68,23 @@ class TMDBRepository {
     }
   }
 
+
+
+  Future<WatchlistResponseModel> addToWatchlist(int accountId, String sessionId, int movieId,bool watchlist) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/account/$accountId/watchlist?session_id=$sessionId&api_key=$apiKey'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'media_type': 'movie',
+        'media_id': movieId,
+        'watchlist': watchlist,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      return WatchlistResponseModel.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to update watchlist');
+    }
+  }
 }

@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter_task_abg/feature/auth/model/model.dart';
 import 'package:flutter_task_abg/feature/auth/model/repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 part 'auth_state.dart';
@@ -57,4 +58,28 @@ class AuthCubit extends Cubit<AuthStates> {
     emit(AuthInitialState());
   }
 
+
+  Future<void> addToWatchlist(int movieId , bool watchlist) async {
+
+      final authState = state as AuthenticatedState;
+      try {
+        WatchlistResponseModel response = await repository.addToWatchlist(
+          authState.accountId,
+          authState.sessionId,
+          movieId,
+          watchlist,
+        );
+
+        if (response.success) {
+          emit(WatchlistUpdatedState(movieId,watchlist));
+
+        } else {
+          emit(AuthErrorState(response.statusMessage));
+        }
+      } catch (e) {
+        emit(AuthErrorState("Failed to update watchlist"));
+      }
+
+  }
 }
+

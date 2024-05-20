@@ -19,3 +19,11 @@ class AuthErrorState extends AuthStates {
 
   AuthErrorState(this.message);
 }
+
+
+class WatchlistUpdatedState extends AuthStates {
+  final int movieId;
+  final bool watchlist;
+
+  WatchlistUpdatedState(this.movieId,this.watchlist);
+}
